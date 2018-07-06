@@ -17,11 +17,12 @@
  *
  */
 
-package env;
+package com.wen.ioc.io;
 
 /**
  * @author awlwen
  * @since 2017/8/17
  */
-public interface Enviorment {
+public interface Path {
+
 }

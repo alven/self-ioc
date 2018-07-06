@@ -17,12 +17,19 @@
  *
  */
 
-package io;
+package com.wen.ioc.meta;
 
 /**
  * @author awlwen
- * @since 2017/8/17
+ * @since 2018/7/6
  */
-public interface FilePath extends Path{
+public class ApplicationContextImpl implements ApplicationContext{
+    public ApplicationContextImpl() {
 
+    }
+
+    @Override
+    public Object getBeanByName(String beanName) {
+        return null;
+    }
 }

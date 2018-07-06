@@ -17,14 +17,12 @@
  *
  */
 
-package env;
-
-import java.util.Map;
+package com.wen.ioc.xml;
 
 /**
  * @author awlwen
- * @since 2017/8/17
+ * @since 2018/7/6
  */
-public interface Properties {
-    Map load();
+public interface XmlParse {
+    
 }

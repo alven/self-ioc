@@ -17,7 +17,7 @@
  *
  */
 
-package env;
+package com.wen.ioc.env;
 
 /**
  * @author awlwen

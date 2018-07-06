@@ -17,11 +17,14 @@
  *
  */
 
-package io;
+package com.wen.ioc.env;
+
+import java.util.Map;
 
 /**
  * @author awlwen
  * @since 2017/8/17
  */
-public interface ClassPath extends Path{
+public interface Properties {
+    Map load();
 }

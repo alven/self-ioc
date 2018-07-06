@@ -17,12 +17,17 @@
  *
  */
 
-package io;
+package com.wen.ioc.annotation;
+
+import java.lang.annotation.*;
 
 /**
  * @author awlwen
- * @since 2017/8/17
+ * @since 2018/7/6
  */
-public abstract class Path {
-    String name;
+@Target(ElementType.METHOD)
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+public @interface Bean {
+    String id();
 }
