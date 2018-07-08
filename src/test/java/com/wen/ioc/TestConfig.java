@@ -17,17 +17,28 @@
  *
  */
 
-package com.wen.ioc.annotation;
+package com.wen.ioc;
 
-import java.lang.annotation.*;
+import com.wen.ioc.exception.IocException;
+import com.wen.ioc.meta.ApplicationContext;
+import com.wen.ioc.meta.ApplicationContextImpl;
+import com.wen.ioc.metdata.Animale;
+import org.junit.Test;
 
 /**
  * @author awlwen
- * @since 2018/7/6
+ * @since 2018/7/8
  */
-@Target(ElementType.METHOD)
-@Retention(RetentionPolicy.RUNTIME)
-@Documented
-public @interface Bean {
-    String id() default "";
+public class TestConfig {
+    @Test
+    public void testConfig(){
+        ApplicationContext app = null;
+        try {
+            app = new ApplicationContextImpl(this.getClass().getPackage().getName());
+        } catch (IocException e) {
+            e.printStackTrace();
+        }
+        Animale animale = (Animale) app.getBeanByName("getAnimale");
+        animale.spark();
+    }
 }

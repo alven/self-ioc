@@ -22,6 +22,7 @@ package com.wen.ioc.util;
 import java.io.File;
 import java.net.JarURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.jar.JarEntry;
@@ -38,7 +39,7 @@ public class ClassUtil {
     public static final String CLASSFILESUFFIX = ".class";
 
     public static List<Class<?>> getClasses(String pkgName){
-        List<Class<?>> returnClass = null;
+        List<Class<?>> returnClass = new ArrayList<>();
         try {
             Enumeration<URL> urls = Thread.currentThread().getContextClassLoader().getResources(pkgName);
             while (urls.hasMoreElements()){
@@ -46,24 +47,9 @@ public class ClassUtil {
                 String protocol = url.getProtocol();
                 if(FILEPROTOCOL.equals(protocol)){
                     String filePath = url.getPath();
-                    returnClass.addAll(getClasses(filePath));
+                    returnClass.addAll(getClassesByfile(filePath, pkgName));
                 }else if(JARPROTOCOL.equals(protocol)){
-                    JarURLConnection connection = (JarURLConnection) url.openConnection();
-                    JarFile jarFile = connection.getJarFile();
-                    Enumeration<JarEntry> jarEntries = jarFile.entries();
-                    while (jarEntries.hasMoreElements()){
-                        JarEntry jarEntry = jarEntries.nextElement();
-                        if(!jarEntry.isDirectory()){
-                            String jarName = jarEntry.getName();
-                            int lastSlashIndex = jarName.lastIndexOf(CLASSFILESUFFIX);
-                            if(lastSlashIndex != -1){
-                                jarName = jarName.substring(0, jarName.length() - CLASSFILESUFFIX.length());
-                            }
-                            jarName = jarName.replaceAll(File.separator, FILEDOT);
-                            Class jarClass = Class.forName(jarName);
-                            returnClass.add(jarClass);
-                        }
-                    }
+                    returnClass.addAll(getClassByJar(url));
                 }
             }
         } catch (Exception e) {
@@ -72,4 +58,45 @@ public class ClassUtil {
         return returnClass;
     }
 
+    private static List<Class<?>> getClassesByfile(String filePath, String pkgName) throws ClassNotFoundException {
+        List<Class<?>> returnClass = new ArrayList<>();
+        File pcfile = new File(filePath);
+        File[] files = pcfile.listFiles((f, p) -> f.isDirectory() || p.endsWith(CLASSFILESUFFIX));
+        if(files != null){
+            for (File file : files) {
+                if(file.isDirectory()){
+                    String sourcePath = pkgName + File.separator + file.getName();
+                    returnClass.addAll(getClassesByfile(file.getAbsolutePath(), sourcePath));
+                }else {
+                    String fileName = file.getName();
+                    fileName = fileName.substring(0, fileName.length() - CLASSFILESUFFIX.length());
+                    pkgName = pkgName.replaceAll(File.separator, FILEDOT);
+                    Class clazz = Class.forName(pkgName + "." + fileName);
+                    returnClass.add(clazz);
+                }
+            }
+        }
+        return returnClass;
+    }
+
+    private static List<Class<?>> getClassByJar(URL url) throws Exception {
+        List<Class<?>> returnClass = new ArrayList<>();
+        JarURLConnection connection = (JarURLConnection) url.openConnection();
+        JarFile jarFile = connection.getJarFile();
+        Enumeration<JarEntry> jarEntries = jarFile.entries();
+        while (jarEntries.hasMoreElements()){
+            JarEntry jarEntry = jarEntries.nextElement();
+            if(!jarEntry.isDirectory()){
+                String jarName = jarEntry.getName();
+                int lastSlashIndex = jarName.lastIndexOf(CLASSFILESUFFIX);
+                if(lastSlashIndex != -1){
+                    jarName = jarName.substring(0, jarName.length() - CLASSFILESUFFIX.length());
+                }
+                jarName = jarName.replaceAll(File.separator, FILEDOT);
+                Class jarClass = Class.forName(jarName);
+                returnClass.add(jarClass);
+            }
+        }
+        return returnClass;
+    }
 }

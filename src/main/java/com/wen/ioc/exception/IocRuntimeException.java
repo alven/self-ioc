@@ -17,17 +17,19 @@
  *
  */
 
-package com.wen.ioc.annotation;
-
-import java.lang.annotation.*;
+package com.wen.ioc.exception;
 
 /**
  * @author awlwen
- * @since 2018/7/6
+ * @since 2018/7/8
  */
-@Target(ElementType.METHOD)
-@Retention(RetentionPolicy.RUNTIME)
-@Documented
-public @interface Bean {
-    String id() default "";
+public class IocRuntimeException extends RuntimeException {
+    private String message;
+
+    public IocRuntimeException() {
+    }
+
+    public IocRuntimeException(String message) {
+        super(message);
+    }
 }

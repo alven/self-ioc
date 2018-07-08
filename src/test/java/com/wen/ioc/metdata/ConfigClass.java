@@ -17,17 +17,19 @@
  *
  */
 
-package com.wen.ioc.annotation;
+package com.wen.ioc.metdata;
 
-import java.lang.annotation.*;
+import com.wen.ioc.annotation.Bean;
+import com.wen.ioc.annotation.Config;
 
 /**
  * @author awlwen
- * @since 2018/7/6
+ * @since 2018/7/8
  */
-@Target(ElementType.METHOD)
-@Retention(RetentionPolicy.RUNTIME)
-@Documented
-public @interface Bean {
-    String id() default "";
+@Config
+public class ConfigClass {
+    @Bean
+    public Animale getAnimale(){
+        return new Dog();
+    }
 }

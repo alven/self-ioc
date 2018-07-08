@@ -17,17 +17,23 @@
  *
  */
 
-package com.wen.ioc.annotation;
+package com.wen.ioc;
 
-import java.lang.annotation.*;
+import com.wen.ioc.util.ClassUtil;
+import org.junit.Test;
+
+import java.util.List;
 
 /**
  * @author awlwen
  * @since 2018/7/6
  */
-@Target(ElementType.METHOD)
-@Retention(RetentionPolicy.RUNTIME)
-@Documented
-public @interface Bean {
-    String id() default "";
+public class ClassUtilTest {
+    @Test
+    public void testGetclass(){
+        List<Class<?>> classes = ClassUtil.getClasses("com/wen/ioc");
+        for (Class tClass : classes){
+            System.out.println(tClass.getName());
+        }
+    }
 }
