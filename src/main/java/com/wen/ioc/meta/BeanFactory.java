@@ -19,10 +19,13 @@
 
 package com.wen.ioc.meta;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * @author awlwen
  * @since 2018/7/6
  */
 public interface BeanFactory {
-    Object newInstance(String id);
+    Map newInstance(List<Class<?>> configClass);
 }

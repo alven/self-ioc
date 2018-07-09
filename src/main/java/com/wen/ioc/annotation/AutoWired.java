@@ -25,7 +25,7 @@ import java.lang.annotation.*;
  * @author awlwen
  * @since 2018/7/6
  */
-@Target(ElementType.METHOD)
+@Target({ElementType.METHOD, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface AutoWired {

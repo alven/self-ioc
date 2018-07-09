@@ -19,6 +19,7 @@
 
 package com.wen.ioc.metdata;
 
+import com.wen.ioc.annotation.AutoWired;
 import com.wen.ioc.annotation.Bean;
 import com.wen.ioc.annotation.Config;
 
@@ -29,7 +30,12 @@ import com.wen.ioc.annotation.Config;
 @Config
 public class ConfigClass {
     @Bean
-    public Animale getAnimale(){
-        return new Dog();
+    public int getInt(){
+        return 10;
+    }
+
+    @Bean
+    public Animale getAnimale(@AutoWired(name = "getInt") int x){
+        return new Dog(x);
     }
 }

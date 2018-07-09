@@ -19,13 +19,13 @@
 
 package com.wen.ioc.meta;
 
-import com.wen.ioc.annotation.Bean;
+import com.wen.ioc.annotation.AutoWired;
 import com.wen.ioc.annotation.Config;
 import com.wen.ioc.exception.IocException;
 import com.wen.ioc.util.ClassUtil;
 
 import java.io.File;
-import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -38,6 +38,11 @@ import java.util.Map;
  */
 public class ApplicationContextImpl implements ApplicationContext{
     private Map beanMap = new HashMap();
+    private BeanFactory beanFactory = new BeanFactoryImpl();
+    private Map initActionMap = new HashMap();
+    private Map postActionMap = new HashMap();
+    private Map preActionMap = new HashMap();
+    private Map destoryMap = new HashMap();
 
     public ApplicationContextImpl(String pkgName) throws IocException {
         //get bean Config
@@ -49,26 +54,8 @@ public class ApplicationContextImpl implements ApplicationContext{
         if(configClass.isEmpty()){
             throw new IocException("can`t find config class");
         }
-
-        configClass.forEach(item -> {
-            Method[] methods = item.getMethods();
-            for (Method method : methods) {
-                if(method.getAnnotation(Bean.class) != null){
-                    try {
-                        Object object = item.newInstance();
-                        Object returnType = method.invoke(object, null);
-                        beanMap.put(method.getName(), returnType);
-                    } catch (IllegalAccessException e) {
-                        e.printStackTrace();
-                    } catch (InstantiationException e) {
-                        e.printStackTrace();
-                    } catch (InvocationTargetException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        });
         //init bean map
+        beanMap = beanFactory.newInstance(configClass);
         //initBeanMap(classes);
     }
 

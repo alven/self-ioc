@@ -24,8 +24,15 @@ package com.wen.ioc.metdata;
  * @since 2018/7/8
  */
 public class Dog implements Animale {
+    private int x;
+
+    public Dog(int x) {
+        this.x = x;
+    }
+
     @Override
     public void spark() {
         System.out.println("one!");
+        System.out.println(x);
     }
 }

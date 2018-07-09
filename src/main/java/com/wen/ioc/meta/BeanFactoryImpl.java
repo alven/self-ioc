@@ -19,13 +19,51 @@
 
 package com.wen.ioc.meta;
 
+import com.wen.ioc.annotation.AutoWired;
+import com.wen.ioc.annotation.Bean;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * @author awlwen
  * @since 2018/7/6
  */
 public class BeanFactoryImpl implements BeanFactory {
+    private Map beanMap = new HashMap();
+
     @Override
-    public Object newInstance(String id) {
-        return null;
+    public Map newInstance(List<Class<?>> configClass) {
+        configClass.forEach(item -> {
+            Method[] methods = item.getMethods();
+            for (Method method : methods) {
+                if(method.getAnnotation(Bean.class) != null){
+                    try {
+                        Object object = item.newInstance();
+                        Parameter[] parameters = method.getParameters();
+                        Object[] objects = new Object[parameters.length];
+                        for (int i = 0; i < parameters.length; i ++) {
+                            Parameter parameter = parameters[i];
+                            AutoWired autoWired = parameter.getAnnotation(AutoWired.class);
+                            Object diObject = beanMap.get(autoWired.name());
+                            objects[i] = diObject;
+                        }
+                        Object returnType = method.invoke(object, objects);
+                        beanMap.put(method.getName(), returnType);
+                    } catch (IllegalAccessException e) {
+                        e.printStackTrace();
+                    } catch (InstantiationException e) {
+                        e.printStackTrace();
+                    } catch (InvocationTargetException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+        return beanMap;
     }
 }
